@@ -8,7 +8,8 @@ import {
   SafeAreaView,
   Image,
   Dimensions,
-  Linking
+  Linking,
+  StatusBar
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { data } from '@/data/toolsData';
@@ -22,7 +23,6 @@ export default function HomeScreen() {
   const [selectedProfession, setSelectedProfession] = useState<any | null>(null);
 
   useEffect(() => {
-   
     if (data.professions.length > 0) {
       setSelectedProfession(data.professions[0]);
     }
@@ -51,15 +51,28 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <LinearGradient
-        colors={['#4568dc', '#b06ab3']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.header}
-      >
-        <Text style={styles.headerTitle}>Abordi AI Tools</Text>
-        <Text style={styles.headerSubtitle}>Find the perfect tools for your workflow</Text>
-      </LinearGradient>
+      <StatusBar barStyle="light-content" />
+      <View style={styles.headerContainer}>
+        <LinearGradient
+          colors={['#3a1c71', '#d76d77', '#ffaf7b']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.headerGradient}
+        >
+          <View style={styles.headerContent}>
+            <View style={styles.logoContainer}>
+              <Ionicons name="cube" size={28} color="#ffffff" />
+              <Text style={styles.headerTitle}>Abordi AI</Text>
+            </View>
+            <Text style={styles.headerSubtitle}>Smart tools for professionals</Text>
+            
+            <View style={styles.searchBar}>
+              <Ionicons name="search-outline" size={18} color="#666" style={styles.searchIcon} />
+              <Text style={styles.searchPlaceholder}>Search AI tools</Text>
+            </View>
+          </View>
+        </LinearGradient>
+      </View>
 
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
         <View style={styles.sectionContainer}>
@@ -118,7 +131,10 @@ export default function HomeScreen() {
                   <Text style={styles.toolDescription}>{tool.description}</Text>
                   <TouchableOpacity
                     style={styles.openBtn}
-                    onPress={() => Linking.openURL(tool.url)}
+                    onPress={() => router.push({
+                      pathname: '/webview',
+                      params: { url: encodeURIComponent(tool.url), name: tool.name },
+                    })}
                   >
                     <Text style={styles.openText}>Open Tool</Text>
                     <Ionicons name="arrow-forward" size={16} color="#ffffff" style={{ marginLeft: 6 }} />
@@ -139,15 +155,17 @@ export default function HomeScreen() {
                 <TouchableOpacity
                   key={idx}
                   style={styles.promptBtn}
-                  onPress={() =>
+                  onPress={() => {
+                    const chatGPTURL = `https://chat.openai.com/?model=gpt-4&prompt=${encodeURIComponent(prompt.title)}`;
                     router.push({
-                      pathname: '/tools',
+                      pathname: '/webview',
                       params: {
-                        prompt: prompt.title,
-                        profession: selectedProfession.name
+                        url: chatGPTURL,
+                        title: prompt.title
                       }
-                    })
-                  }
+                    });
+                  }}
+                  
                 >
                   <Ionicons name="file-tray-full-outline" size={20} color="#4568dc" style={styles.promptIcon} />
                   <Text style={styles.promptText}>{prompt.title}</Text>
@@ -174,26 +192,63 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  header: {
-    paddingVertical: 30,
-    paddingHorizontal: 20,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
+  headerContainer: {
+    overflow: 'hidden',
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 10,
-    elevation: 8,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.2,
+    shadowRadius: 12,
+    elevation: 10,
+  },
+  headerGradient: {
+    paddingTop: 20,
+  },
+  headerContent: {
+    paddingHorizontal: 20,
+    paddingBottom: 30,
+    paddingTop: 10,
+  },
+  logoContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
   },
   headerTitle: {
-    fontSize: 28,
+    fontSize: 30,
     fontWeight: 'bold',
     color: '#ffffff',
-    marginBottom: 8,
+    marginLeft: 10,
+    textShadowColor: 'rgba(0, 0, 0, 0.2)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 3,
   },
   headerSubtitle: {
     fontSize: 16,
+    fontWeight: '500',
     color: 'rgba(255, 255, 255, 0.9)',
+    marginBottom: 20,
+  },
+  searchBar: {
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    borderRadius: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  searchIcon: {
+    marginRight: 10,
+  },
+  searchPlaceholder: {
+    color: '#888',
+    fontSize: 15,
   },
   sectionContainer: {
     padding: 16,

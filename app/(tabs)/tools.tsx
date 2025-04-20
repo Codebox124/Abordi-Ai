@@ -18,15 +18,12 @@ export default function ToolsScreen() {
   const { prompt, profession } = useLocalSearchParams<{ prompt: string; profession: string }>();
   const router = useRouter();
   
-  
   const professionData = data.professions.find(p => p.name === profession);
-  
   
   const tools = professionData?.tools || 
     data.professions.flatMap(p => p.tools).filter((tool, index, self) => 
       index === self.findIndex(t => t.name === tool.name)
     );
-  
   
   const promptData = professionData?.prompts.find(p => p.title === prompt);
 
@@ -34,28 +31,45 @@ export default function ToolsScreen() {
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="light-content" />
       
-      <LinearGradient
-        colors={['#4568dc', '#b06ab3']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.header}
-      >
-        <TouchableOpacity 
-          style={styles.backButton}
-          onPress={() => router.back()}
+      <View style={styles.headerContainer}>
+        <LinearGradient
+          colors={['#3a1c71', '#d76d77', '#ffaf7b']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.headerGradient}
         >
-          <Ionicons name="arrow-back" size={24} color="#ffffff" />
-        </TouchableOpacity>
-        
-        <View style={styles.headerTextContainer}>
-          <Text style={styles.headerTitle}>
-            {prompt || (profession ? `${profession} Tools` : 'All AI Tools')}
-          </Text>
-          <Text style={styles.headerSubtitle}>
-            {promptData?.title ? 'Recommended for this prompt' : 'Tools to enhance your workflow'}
-          </Text>
-        </View>
-      </LinearGradient>
+          <View style={styles.headerContent}>
+            <TouchableOpacity 
+              style={styles.backButton}
+              onPress={() => router.back()}
+            >
+              <Ionicons name="arrow-back" size={22} color="#ffffff" />
+            </TouchableOpacity>
+            
+            <View style={styles.headerTextContainer}>
+              <Text style={styles.headerTitle}>
+                {prompt || (profession ? `${profession} Tools` : 'All AI Tools')}
+              </Text>
+              <Text style={styles.headerSubtitle}>
+                {promptData?.title ? 'Recommended for this prompt' : 'Tools to enhance your workflow'}
+              </Text>
+            </View>
+            
+            <TouchableOpacity style={styles.headerAction}>
+              <Ionicons name="options-outline" size={22} color="#ffffff" />
+            </TouchableOpacity>
+          </View>
+          
+          {promptData && (
+            <View style={styles.promptPreview}>
+              <Ionicons name="bulb-outline" size={18} color="#ffffff" style={styles.promptIcon} />
+              <Text numberOfLines={1} style={styles.promptPreviewText}>
+                {promptData.title}
+              </Text>
+            </View>
+          )}
+        </LinearGradient>
+      </View>
 
       <ScrollView 
         style={styles.container}
@@ -65,7 +79,9 @@ export default function ToolsScreen() {
         {promptData && (
           <View style={styles.promptContainer}>
             <View style={styles.promptHeader}>
-              <Ionicons name="bulb-outline" size={24} color="#4568dc" />
+              <View style={styles.promptIconContainer}>
+                <Ionicons name="bulb-outline" size={20} color="#ffffff" />
+              </View>
               <Text style={styles.promptTitle}>About this prompt</Text>
             </View>
             <Text style={styles.promptDescription}>
@@ -86,12 +102,14 @@ export default function ToolsScreen() {
         {tools.map((tool, index) => (
           <View key={index} style={styles.toolCard}>
             <View style={styles.toolCardHeader}>
-              <View style={[
-                styles.toolIconContainer, 
-                { backgroundColor: getRandomColor(index) }
-              ]}>
+              <LinearGradient
+                colors={getRandomGradient(index)}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.toolIconContainer}
+              >
                 <Ionicons name="cube-outline" size={20} color="#ffffff" />
-              </View>
+              </LinearGradient>
               <Text style={styles.toolName}>{tool.name}</Text>
             </View>
             
@@ -100,10 +118,17 @@ export default function ToolsScreen() {
             <View style={styles.buttonContainer}>
               <TouchableOpacity
                 style={styles.linkBtn}
-                onPress={() => Linking.openURL(tool.url)}
+                onPress={() => router.push({
+                  pathname: '/webview',
+                  params: { url: encodeURIComponent(tool.url), name: tool.name },
+                })}
               >
                 <Text style={styles.linkText}>Open Tool</Text>
                 <Ionicons name="open-outline" size={16} color="#ffffff" style={styles.buttonIcon} />
+              </TouchableOpacity>
+              
+              <TouchableOpacity style={styles.favoriteBtn}>
+                <Ionicons name="bookmark-outline" size={20} color="#4568dc" />
               </TouchableOpacity>
             </View>
           </View>
@@ -113,6 +138,17 @@ export default function ToolsScreen() {
   );
 }
 
+const getRandomGradient = (index: number): string[] => {
+  const gradients = [
+    ['#4568dc', '#b06ab3'],
+    ['#2193b0', '#6dd5ed'],
+    ['#834d9b', '#d04ed6'],
+    ['#36d1dc', '#5b86e5'],
+    ['#5614b0', '#dbd65c'],
+    ['#1565C0', '#b92b27'],
+  ];
+  return gradients[index % gradients.length];
+};
 
 const getRandomColor = (index: number): string => {
   const colors = [
@@ -140,19 +176,24 @@ const styles = StyleSheet.create({
     padding: 16,
     paddingBottom: 30,
   },
-  header: {
-    paddingTop: 40,
-    paddingBottom: 25,
+  headerContainer: {
+    overflow: 'hidden',
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.2,
+    shadowRadius: 12,
+    elevation: 10,
+  },
+  headerGradient: {
+    paddingTop: 20,
+  },
+  headerContent: {
     paddingHorizontal: 20,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
+    paddingVertical: 16,
     flexDirection: 'row',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 10,
-    elevation: 8,
   },
   backButton: {
     width: 40,
@@ -161,7 +202,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 16,
+    marginRight: 12,
   },
   headerTextContainer: {
     flex: 1,
@@ -171,10 +212,38 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#ffffff',
     marginBottom: 4,
+    textShadowColor: 'rgba(0, 0, 0, 0.2)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 3,
   },
   headerSubtitle: {
     fontSize: 14,
     color: 'rgba(255, 255, 255, 0.85)',
+  },
+  headerAction: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 8,
+  },
+  promptPreview: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    marginTop: 8,
+  },
+  promptIcon: {
+    marginRight: 10,
+  },
+  promptPreviewText: {
+    color: '#ffffff',
+    flex: 1,
+    fontSize: 14,
   },
   promptContainer: {
     backgroundColor: '#ffffff',
@@ -194,11 +263,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 12,
   },
+  promptIconContainer: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#4568dc',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
   promptTitle: {
     fontSize: 18,
     fontWeight: '600',
     color: '#333',
-    marginLeft: 10,
   },
   promptDescription: {
     fontSize: 15,
@@ -243,9 +320,9 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   toolIconContainer: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 14,
@@ -264,7 +341,8 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'flex-start',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   linkBtn: {
     backgroundColor: '#4568dc',
@@ -286,5 +364,15 @@ const styles = StyleSheet.create({
   },
   buttonIcon: {
     marginLeft: 8,
+  },
+  favoriteBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f0f4ff',
+    borderWidth: 1,
+    borderColor: '#e0e7ff',
   },
 });
