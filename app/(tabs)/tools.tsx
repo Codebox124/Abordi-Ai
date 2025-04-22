@@ -48,7 +48,7 @@ export default function ToolsScreen() {
             
             <View style={styles.headerTextContainer}>
               <Text style={styles.headerTitle}>
-                {prompt || (profession ? `${profession} Tools` : 'All AI Tools')}
+                {prompt || (profession ? `${profession} Tools` : 'All Tools')}
               </Text>
               <Text style={styles.headerSubtitle}>
                 {promptData?.title ? 'Recommended for this prompt' : 'Tools to enhance your workflow'}
@@ -194,6 +194,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     flexDirection: 'row',
     alignItems: 'center',
+    paddingTop:40
   },
   backButton: {
     width: 40,

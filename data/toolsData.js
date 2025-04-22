@@ -1,4 +1,4 @@
-// data/toolsData.js
+
 export const data = {
     "professions": [
         {
