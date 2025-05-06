@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import { 
-  View, 
-  Text, 
-  ScrollView, 
-  TouchableOpacity, 
-  StyleSheet, 
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  StyleSheet,
   SafeAreaView,
   Image,
   Dimensions,
@@ -16,7 +16,8 @@ import { useRouter } from 'expo-router';
 import { data } from '@/data/toolsData.js';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import React = require('react');
+import React from 'react';
+
 
 const { width } = Dimensions.get('window');
 
@@ -40,8 +41,8 @@ export default function HomeScreen() {
         setFilteredTools(selectedProfession.tools);
       } else {
         const query = searchQuery.toLowerCase();
-        const filtered = selectedProfession.tools.filter((tool: any) => 
-          tool.name.toLowerCase().includes(query) || 
+        const filtered = selectedProfession.tools.filter((tool: any) =>
+          tool.name.toLowerCase().includes(query) ||
           tool.description.toLowerCase().includes(query)
         );
         setFilteredTools(filtered);
@@ -69,16 +70,16 @@ export default function HomeScreen() {
     if (searchQuery.trim() === '') {
       return [];
     }
-    
+
     const query = searchQuery.toLowerCase();
     let allResults: any[] = [];
-    
+
     data.professions.forEach((profession) => {
-      const results = profession.tools.filter((tool: any) => 
-        tool.name.toLowerCase().includes(query) || 
+      const results = profession.tools.filter((tool: any) =>
+        tool.name.toLowerCase().includes(query) ||
         tool.description.toLowerCase().includes(query)
       );
-      
+
       // Add profession name to each result for better context
       results.forEach((tool: any) => {
         allResults.push({
@@ -87,7 +88,7 @@ export default function HomeScreen() {
         });
       });
     });
-    
+
     return allResults;
   };
 
@@ -97,19 +98,19 @@ export default function HomeScreen() {
 
   const getRandomColor = (index: number) => {
     const colors = [
-      ['#4568dc', '#b06ab3'], 
-      ['#2193b0', '#6dd5ed'], 
-      ['#834d9b', '#d04ed6'], 
-      ['#36d1dc', '#5b86e5'], 
-      ['#5614b0', '#dbd65c'], 
-      ['#1565C0', '#b92b27'], 
+      ['#4568dc', '#b06ab3'],
+      ['#2193b0', '#6dd5ed'],
+      ['#834d9b', '#d04ed6'],
+      ['#36d1dc', '#5b86e5'],
+      ['#5614b0', '#dbd65c'],
+      ['#1565C0', '#b92b27'],
     ];
     return colors[index % colors.length];
   };
 
   const renderSearchResults = () => {
     const allResults = searchAllTools();
-    
+
     if (allResults.length === 0) {
       return (
         <View style={styles.noResultsContainer}>
@@ -119,7 +120,7 @@ export default function HomeScreen() {
         </View>
       );
     }
-    
+
     return (
       <View style={styles.searchResultsContainer}>
         <Text style={styles.searchResultsTitle}>Search Results</Text>
@@ -156,18 +157,23 @@ export default function HomeScreen() {
       <StatusBar barStyle="light-content" />
       <View style={styles.headerContainer}>
         <LinearGradient
-          colors={['#3a1c71', '#d76d77', '#ffaf7b']}
+          colors={['#13072C', '#402CFF']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.headerGradient}
         >
           <View style={styles.headerContent}>
             <View style={styles.logoContainer}>
-              <Ionicons name="cube" size={28} color="#ffffff" />
+              <Image
+                source={require('@/assets/images/splash.png')}
+                style={{ width: 28, height: 28 }}
+                resizeMode="contain"
+              />
+
               <Text style={styles.headerTitle}>Abordi</Text>
             </View>
             <Text style={styles.headerSubtitle}>Smart tools for professionals</Text>
-            
+
             <View style={styles.searchBar}>
               <Ionicons name="search-outline" size={18} color="#666" style={styles.searchIcon} />
               <TextInput
@@ -196,8 +202,8 @@ export default function HomeScreen() {
           <>
             <View style={styles.sectionContainer}>
               <Text style={styles.sectionTitle}>Choose Your Profession</Text>
-              <ScrollView 
-                horizontal 
+              <ScrollView
+                horizontal
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={styles.professionScrollView}
               >
@@ -238,7 +244,7 @@ export default function HomeScreen() {
                     </View>
                     <Text style={styles.sectionTitle}>Recommended AI Tools</Text>
                   </View>
-                  
+
                   {filteredTools.length === 0 ? (
                     <View style={styles.noToolsContainer}>
                       <Text style={styles.noToolsText}>No tools match your search</Text>
@@ -275,7 +281,7 @@ export default function HomeScreen() {
                     </View>
                     <Text style={styles.sectionTitle}>Recommended Prompts</Text>
                   </View>
-                  
+
                   {selectedProfession.prompts.map((prompt: any, idx: number) => (
                     <TouchableOpacity
                       key={idx}
@@ -290,7 +296,7 @@ export default function HomeScreen() {
                           }
                         });
                       }}
-                      
+
                     >
                       <Ionicons name="file-tray-full-outline" size={20} color="#4568dc" style={styles.promptIcon} />
                       <Text style={styles.promptText}>{prompt.title}</Text>
@@ -302,7 +308,7 @@ export default function HomeScreen() {
             )}
           </>
         )}
-        
+
         <View style={styles.footer}>
           <Text style={styles.footerText}>© 2025 Abordi  - Smart tools for professionals</Text>
         </View>
@@ -410,7 +416,7 @@ const styles = StyleSheet.create({
   searchResultsTitle: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#333',
+    color: '#13072C',
     marginBottom: 16,
   },
   sectionHeaderContainer: {
@@ -422,7 +428,7 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: '#4568dc',
+    backgroundColor: '#402CFF',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
@@ -430,7 +436,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#333',
+    color: '#13072C',
   },
   professionScrollView: {
     paddingVertical: 16,
@@ -451,6 +457,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 8,
+    backgroundColor: '#402CFF',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -469,7 +476,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   selectedProfessionText: {
-    color: '#4568dc',
+    color: '#402CFF',
     fontWeight: '700',
   },
   card: {
@@ -494,7 +501,7 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: '#4568dc',
+    backgroundColor: '#402CFF',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 14,
@@ -502,7 +509,7 @@ const styles = StyleSheet.create({
   toolTitle: {
     fontWeight: '700',
     fontSize: 18,
-    color: '#333',
+    color: '#13072C',
     flex: 1,
   },
   toolTitleContainer: {
@@ -520,7 +527,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   openBtn: {
-    backgroundColor: '#4568dc',
+    backgroundColor: '#402CFF',
     paddingVertical: 12,
     paddingHorizontal: 18,
     borderRadius: 12,
@@ -528,7 +535,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'flex-start',
-    shadowColor: '#4568dc',
+    shadowColor: '#402CFF',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
@@ -540,12 +547,12 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   promptBtn: {
-    backgroundColor: '#f6f8ff',
+    backgroundColor: '#e6fffb',
     padding: 16,
     borderRadius: 14,
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: '#e6efff',
+    borderColor: '#b2fff4',
     flexDirection: 'row',
     alignItems: 'center',
     shadowColor: '#000',
@@ -561,7 +568,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     fontWeight: '500',
-    color: '#444',
+    color: '#13072C',
   },
   footer: {
     padding: 24,
@@ -579,7 +586,7 @@ const styles = StyleSheet.create({
   noResultsText: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#555',
+    color: '#13072C',
     marginTop: 16,
   },
   noResultsSubtext: {
@@ -595,5 +602,5 @@ const styles = StyleSheet.create({
   noToolsText: {
     fontSize: 16,
     color: '#888',
-  }
+  },
 });

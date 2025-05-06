@@ -1,13 +1,13 @@
 import React from 'react';
-import { 
-  View, 
-  Text, 
-  Linking, 
-  StyleSheet, 
-  ScrollView, 
-  TouchableOpacity, 
-  SafeAreaView, 
-  StatusBar 
+import {
+  View,
+  Text,
+  Linking,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  SafeAreaView,
+  StatusBar
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { data } from '@/data/toolsData';
@@ -17,35 +17,35 @@ import { Ionicons } from '@expo/vector-icons';
 export default function ToolsScreen() {
   const { prompt, profession } = useLocalSearchParams<{ prompt: string; profession: string }>();
   const router = useRouter();
-  
+
   const professionData = data.professions.find(p => p.name === profession);
-  
-  const tools = professionData?.tools || 
-    data.professions.flatMap(p => p.tools).filter((tool, index, self) => 
+
+  const tools = professionData?.tools ||
+    data.professions.flatMap(p => p.tools).filter((tool, index, self) =>
       index === self.findIndex(t => t.name === tool.name)
     );
-  
+
   const promptData = professionData?.prompts.find(p => p.title === prompt);
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="light-content" />
-      
+
       <View style={styles.headerContainer}>
         <LinearGradient
-          colors={['#3a1c71', '#d76d77', '#ffaf7b']}
+          colors={['#13072C', '#402CFF']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.headerGradient}
         >
           <View style={styles.headerContent}>
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.backButton}
               onPress={() => router.back()}
             >
               <Ionicons name="arrow-back" size={22} color="#ffffff" />
             </TouchableOpacity>
-            
+
             <View style={styles.headerTextContainer}>
               <Text style={styles.headerTitle}>
                 {prompt || (profession ? `${profession} Tools` : 'All Tools')}
@@ -54,12 +54,12 @@ export default function ToolsScreen() {
                 {promptData?.title ? 'Recommended for this prompt' : 'Tools to enhance your workflow'}
               </Text>
             </View>
-            
+
             <TouchableOpacity style={styles.headerAction}>
               <Ionicons name="options-outline" size={22} color="#ffffff" />
             </TouchableOpacity>
           </View>
-          
+
           {promptData && (
             <View style={styles.promptPreview}>
               <Ionicons name="bulb-outline" size={18} color="#ffffff" style={styles.promptIcon} />
@@ -71,7 +71,7 @@ export default function ToolsScreen() {
         </LinearGradient>
       </View>
 
-      <ScrollView 
+      <ScrollView
         style={styles.container}
         contentContainerStyle={styles.contentContainer}
         showsVerticalScrollIndicator={false}
@@ -89,7 +89,7 @@ export default function ToolsScreen() {
             </Text>
           </View>
         )}
-        
+
         <View style={styles.toolsHeaderContainer}>
           <View style={styles.toolsIconContainer}>
             <Ionicons name="grid-outline" size={20} color="#ffffff" />
@@ -112,9 +112,9 @@ export default function ToolsScreen() {
               </LinearGradient>
               <Text style={styles.toolName}>{tool.name}</Text>
             </View>
-            
+
             <Text style={styles.toolDescription}>{tool.description}</Text>
-            
+
             <View style={styles.buttonContainer}>
               <TouchableOpacity
                 style={styles.linkBtn}
@@ -126,7 +126,7 @@ export default function ToolsScreen() {
                 <Text style={styles.linkText}>Open Tool</Text>
                 <Ionicons name="open-outline" size={16} color="#ffffff" style={styles.buttonIcon} />
               </TouchableOpacity>
-              
+
               <TouchableOpacity style={styles.favoriteBtn}>
                 <Ionicons name="bookmark-outline" size={20} color="#4568dc" />
               </TouchableOpacity>
@@ -152,14 +152,14 @@ const getRandomGradient = (index: number): string[] => {
 
 const getRandomColor = (index: number): string => {
   const colors = [
-    '#4568dc', 
-    '#b06ab3', 
-    '#4CAF50', 
-    '#FF5722', 
-    '#2196F3', 
-    '#9C27B0', 
-    '#009688', 
-    '#E91E63', 
+    '#4568dc',
+    '#b06ab3',
+    '#4CAF50',
+    '#FF5722',
+    '#2196F3',
+    '#9C27B0',
+    '#009688',
+    '#E91E63',
   ];
   return colors[index % colors.length];
 };
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingTop:40
+    paddingTop: 40
   },
   backButton: {
     width: 40,
